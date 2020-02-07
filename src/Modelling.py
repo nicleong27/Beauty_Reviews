@@ -39,82 +39,6 @@ warnings.filterwarnings('ignore')
 
 from sklearn.preprocessing import LabelBinarizer
 
-def modelling(text_series, y, vectorizer, model):
-    # declare X
-    X = vectorizer.fit_transform(text_series)
-    
-    if model.__class__.__name__ == 'GaussianNB':
-        X = X.toarray()
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-
-    precision = precision_score(y_test, y_pred)
-    accuracy = accuracy_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-
-    probs = model.predict_proba(X_test)[:, 1]
-    roc_auc = roc_auc_score(y_test, probs)
-    thresh_df = calculate_threshold_values(probs, y_test)
-    
-    return precision, accuracy, recall, thresh_df, roc_auc, model
-
-
-
-fig, ax = plt.subplots(figsize=(15,8))
-
-def plot_roc(ax, df, name):
-    '''Plots single ROC'''
-    
-    ax.plot([1]+list(df.fpr), [1]+list(df.tpr), label=name)
-#     ax.plot([0,1],[0,1], 'k', label="random")
-    ax.set_xlabel('False Positive Rate', fontsize=16)
-    ax.set_ylabel('True Positive Rate', fontsize=16)
-#     ax.set_title('ROC Curve - Model Comparison', fontweight='bold', fontsize=24)
-    ax.legend(fontsize=14)
-
-
-def plot_multiple_rocs(model_list, text_series, y, vectorizer):
-
-    def modelling(text_series, y, vectorizer, model):
-        # declare X
-        X = vectorizer.fit_transform(text_series)
-        
-        if model.__class__.__name__ == 'GaussianNB':
-            X = X.toarray()
-
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-
-        precision = precision_score(y_test, y_pred)
-        accuracy = accuracy_score(y_test, y_pred)
-        recall = recall_score(y_test, y_pred)
-
-        probs = model.predict_proba(X_test)[:, 1]
-        roc_auc = roc_auc_score(y_test, probs)
-        thresh_df = calculate_threshold_values(probs, y_test)
-        
-        return precision, accuracy, recall, thresh_df, roc_auc, model
-    
-    
-    def plot_roc(ax, df, name):
-        '''Plots single ROC'''
-    
-        ax.plot([1]+list(df.fpr), [1]+list(df.tpr), label=name)
-    #     ax.plot([0,1],[0,1], 'k', label="random")
-        ax.set_xlabel('False Positive Rate', fontsize=16)
-        ax.set_ylabel('True Positive Rate', fontsize=16)
-    #     ax.set_title('ROC Curve - Model Comparison', fontweight='bold', fontsize=24)
-        ax.legend(fontsize=14)
-
-    '''Plot multiple ROCs'''
-    ax.plot([0,1],[0,1], 'k', label="random")
-    for model in model_list:
-        results = modelling(text_series, y, vectorizer, model)
-        auc_score = results[4]
-        plot_roc(ax, results[3], '{} AUC {}'.format(model.__class__.__name__, round(auc_score, 3)))
 
 
 def calculate_threshold_values(prob, y):
@@ -139,14 +63,6 @@ def calculate_threshold_values(prob, y):
     df = df.reset_index(drop=True)
     return df
 
-def print_precision_acc_recall(df, text_series, y, model):
-    '''Prints precision, accuracy, and recall for model'''
-    print('Precision for {} is {:.2f}'.format(modelling(df[text_series], y, TfidfVectorizer(), model)[5].__class__.__name__,
-                                                modelling(df[text_series], y, TfidfVectorizer(), model)[0]))
-    print('Accuracy for {} is {:.2f}'.format(modelling(df[text_series], y, TfidfVectorizer(), model)[5].__class__.__name__,
-                                                modelling(df[text_series], y, TfidfVectorizer(), model)[1]))
-    print('Recall for {} is {:.2f}'.format(modelling(df[text_series], y, TfidfVectorizer(), model)[5].__class__.__name__,
-                                                modelling(df[text_series], y, TfidfVectorizer(), model)[2]))
 
 def get_conf_matrix(text_series, y, vectorizer, model):
     # declare X
@@ -160,3 +76,53 @@ def get_conf_matrix(text_series, y, vectorizer, model):
     y_pred = model.predict(X_test)
     
     print(confusion_matrix(y_test, y_pred))
+
+def modelling(text_series, y, vectorizer, model):
+    # declare X
+    X = vectorizer.fit_transform(text_series)
+    
+    if model.__class__.__name__ == 'GaussianNB':
+        X = X.toarray()
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    precision = precision_score(y_test, y_pred)
+    accuracy = accuracy_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+
+    probs = model.predict_proba(X_test)[:, 1]
+    roc_auc = roc_auc_score(y_test, probs)
+    thresh_df = calculate_threshold_values(probs, y_test)
+    
+    return precision, accuracy, recall, thresh_df, roc_auc, model
+    
+def plot_roc(ax, df, name):
+    ax.plot([1]+list(df.fpr), [1]+list(df.tpr), label=name)
+#     ax.plot([0,1],[0,1], 'k', label="random")
+    ax.set_xlabel('False Positive Rate', fontsize=16)
+    ax.set_ylabel('True Positive Rate', fontsize=16)
+#     ax.set_title('ROC Curve - Model Comparison', fontweight='bold', fontsize=24)
+    ax.legend(fontsize=14)
+
+# plot multiple rocs for NLP
+def plot_multiple_rocs(model_list, text_series, y, vectorizer,ax):
+
+    ax.plot([0,1],[0,1], 'k', label="random")
+    for model in model_list:
+        results = modelling(text_series, y, vectorizer, model)
+        auc_score = results[4]
+        plot_roc(ax, results[3], '{} AUC {}'.format(model.__class__.__name__, round(auc_score, 3)))
+    
+def plot_precision_recall(ax, df, name):
+    ax.plot(df.tpr,df.precision, label=name)
+#     ax.plot([0,1],[0,1], 'k')
+    ax.set_xlabel('Recall', fontsize=16)
+    ax.set_ylabel('Precision', fontsize=16)
+#     ax.set_title('Precision/Recall Curve')
+    # ax.plot([0,1],[df.precision[0],df.precision[0]], 'k', label='random')
+#     ax.set_title('ROC Curve - Model Comparison', fontweight='bold', fontsize=24)
+    ax.set_xlim(xmin=0,xmax=1)
+    ax.set_ylim(ymin=0,ymax=1)
+    ax.legend(fontsize=14)
