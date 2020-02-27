@@ -4,10 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class EDA(object):
-    '''EDA class containing multiple functions needed for EDA'''
+    '''EDA class containing multiple functions that help visualize the dataset'''
 
     def __init__(self):
-        '''Initialize with dataframe '''
         pass
 
     def missing_zero_values_table(self, df):
@@ -40,13 +39,15 @@ class EDA(object):
         return mz_table
 
     def plot_skin(self, df, group, count_by):
-        ''' Plots a bar graph by grouping by a specific column and plotting the count of those categories.
+        ''' Groups by a specific column and plots the count of those categories in a bar graph.
 
         Parameters
         ----------
         df: pandas dataframe
         group: str
+            Column name that is to be grouped by
         count_by: str
+            Column name whose values are to be counted by
 
         Returns:
         --------
@@ -65,10 +66,14 @@ class EDA(object):
 
         Parameters
         ----------
-        x = pandas series
-        y = pandas series
-        y0_name = str
-        y1_name = str
+        x : pandas series
+            Feature who values are to be plotted against y or predicted label
+        y : pandas series
+            Label to be predicted
+        y0_name : str
+            Y value that is equal to 0
+        y1_name : str
+            Y value that is equal to 1
 
         Returns:
         --------
