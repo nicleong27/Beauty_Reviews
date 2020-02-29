@@ -150,7 +150,7 @@ class Prepocessing(object):
         '''
         punctuation_ = set(string.punctuation)
         stopwords_ = set(stopwords.words('english'))
-        stopwords_.update(['foundation', 'skin'])
+        stopwords_.update(['foundation', 'skin', 'oily', 'dry'])
 
         stemmer = stemming
         df[col_name] = [self.remove_accents(row) for row in df[col_name]]
