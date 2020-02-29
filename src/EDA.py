@@ -2,6 +2,10 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+
 
 class EDA(object):
     '''EDA class containing multiple functions that help visualize the dataset'''
@@ -86,3 +90,54 @@ class EDA(object):
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
         plt.legend(fontsize=12)
+
+    def create_wordcloud(self, df, col_name):
+        '''
+        Creates wordcloud based on dataframe column name.
+
+        Parameters
+        ----------
+        df: pandas dataframe
+        col_name : str 
+            Text column name looking to plot
+
+        Returns:
+        --------
+        None
+        '''
+        text = ' '.join(review for review in df[col_name])
+        wordcloud = WordCloud(background_color='white').generate(text)
+        plt.figure(figsize=(10, 7))
+        plt.imshow(wordcloud, interpolation='bilinear')
+
+    def w_freq(self, text_series):
+        '''
+        Maps bag of words with count frequencies and sorts these from 
+        most to least frequent.
+
+        Parameters
+        ----------
+        text_series : pandas series
+
+        Returns:
+        --------
+        words_freq : lst
+            List of tuples 
+        '''
+        countvect = CountVectorizer()
+        bag_of_words = countvect.fit_transform(text_series)
+        sum_words = bag_of_words.sum(axis=0)
+        words_freq = [(word, sum_words[0, idx]) for word, idx in countvect.vocabulary_.items()]
+        words_freq =sorted(words_freq, key = lambda x: x[1], reverse=True)
+        return words_freq
+
+    def top_10_word_freq(self, word_lst, word_count):
+        fig, ax = plt.subplots(figsize=(10,7))
+        ax.bar(word_lst[:10], word_count[:10], color='midnightblue')
+        ax.set_xlabel('Words', fontsize=16)
+        ax.set_ylabel('Count', fontsize=16)
+        plt.xticks(rotation=0)
+        ax.tick_params(axis='both', labelsize=16)
+        plt.title('Top 10 Word Counts', fontsize=20)
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
