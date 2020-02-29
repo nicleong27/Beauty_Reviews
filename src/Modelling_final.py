@@ -37,131 +37,7 @@ from string import digits
 import warnings
 warnings.filterwarnings('ignore')
 
-from sklearn.preprocessing import LabelBinarizer
-
-class Prepocessing(object):
-    ''' Preprocessing class that will process and clean data, so that
-    data can be fitted to the model(s).
-    '''
-
-    def __init__(self):
-        pass
-
-    def oily_dry_skin(self, df):
-        '''
-        Replaces oily and dry classes with 1's and 0's.
-
-        Parameters
-        ----------
-        df: pandas dataframe
-
-        Returns:
-        --------
-        df: pandas dataframe
-        '''
-        # df_no_na = df.dropna(subset=['skin_concerns', 'skin_tone', 'skin_type'])
-        df['skin_type'] = np.where((df['skin_type'] == 'oily'), 1, 0)
-        return df 
-
-    def preprocess_vect(self, df, col_name, vectorizer):
-        '''
-        Preprocess/vectorize dataframe, so that the dataframe can be passed into the model
-
-        Parameters
-        ----------
-        df: pandas dataframe
-        col_name: column name string
-        vectorizer: vectorizer function
-
-        Returns:
-        --------
-        nlp_df: pandas dataframe
-        '''
-        vect = vectorizer.fit_transform(df[col_name]).todense()
-        bow = vectorizer.get_feature_names()
-        nlp_df = pd.DataFrame(vect, columns=bow)
-        return nlp_df
-
-    def remove_accents(self, input_str):
-        ''' Removes accents from string.
-
-        Parameters
-        ----------
-        input_str: string
-
-        Returns:
-        --------
-        nfkd_form: string without accents
-        '''
-        nfkd_form = unicodedata.normalize('NFKD', input_str)
-        only_ascii = nfkd_form.encode('ASCII', 'ignore')
-        #     return only_ascii.decode()
-        return nfkd_form
-
-
-    def strip_html_tags(self,text):
-        '''Removes html tags from string
-
-        Parameters
-        ----------
-        text: string
-
-        Returns:
-        --------
-        stripped_text: string without html tags
-        
-        '''
-        soup = BeautifulSoup(text, "html.parser")
-        stripped_text = soup.get_text(separator=" ")
-        return stripped_text
-
-    def remove_nums(self, text):
-        '''Removes numbers from string
-
-        Parameters
-        ----------
-        text: string
-
-        Returns:
-        --------
-        no_digits: string without numbers
-        
-        '''
-        remove_digits = str.maketrans('', '', digits)
-        no_digits = text.translate(remove_digits)
-        return no_digits
-
-    # use to format strings before putting into model after deciding to stem or not
-    def format_strings(self, df, col_name, stemming):
-        '''
-        Reformats and tokenizes strings in pandas dataframe column
-
-        Parameters
-        ----------
-        df: pandas dataframe
-        col_name: string
-        stemming: stemming function
-
-        Returns:
-        --------
-        none
-
-        '''
-        punctuation_ = set(string.punctuation)
-        stopwords_ = set(stopwords.words('english'))
-        stopwords_.update(['foundation', 'skin'])
-
-        stemmer = stemming
-        df[col_name] = [self.remove_accents(row) for row in df[col_name]]
-        df[col_name] = [self.remove_nums(row) for row in df[col_name]]
-        df[col_name] = [self.strip_html_tags(row) for row in df[col_name]]
-        df[col_name] = df[col_name].replace(r'[^A-Za-z0-9 ]+', '', regex=True)
-        df[col_name] = [word_tokenize(row.lower()) for row in df[col_name]]
-        df[col_name] = [[word for word in row if not word in stopwords_ and not word in punctuation_]
-                    for row in df[col_name]]
-        # adjust based on stemming chosen
-        df[col_name] = df[col_name].apply(lambda row: ' '.join([stemmer.lemmatize(word) for word in row]))
-        return df
+import seaborn as sns
 
 
 class Create_Models(object):
@@ -173,7 +49,13 @@ class Create_Models(object):
     '''
 
     def __init__(self):
-        pass
+        self.y_pred = y_pred
+        self.y_test = y_test
+        self.precision = precision
+        self.accuracy = accuracy
+        self.recall = recall
+        self.vect = vect 
+
 
     def modelling(self, text_series, y, vectorizer, model):
         '''
@@ -184,31 +66,34 @@ class Create_Models(object):
         text_series : array of features
         y : array of labels
         vectorizer : vectorizer function
-        model : model function
+        model_: model function
 
         Returns:
         --------
         precision, accuracy, recall, thresh_df, roc_auc, model
         '''
+        self.vect = vectorizer
         # declare X
         X = vectorizer.fit_transform(text_series)
+        bow = vectorizer.get_feature_names()
         
         if model.__class__.__name__ == 'GaussianNB':
             X = X.toarray()
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+        X_train, X_test, y_train, self.y_test = train_test_split(X, y, test_size=0.25)
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
+        self.y_pred = model.predict(X_test)
 
-        precision = precision_score(y_test, y_pred)
-        accuracy = accuracy_score(y_test, y_pred)
-        recall = recall_score(y_test, y_pred)
+        self.precision = precision_score(self.y_test, self.y_pred)
+        self.accuracy = accuracy_score(self.y_test, self.y_pred)
+        self.recall = recall_score(self.y_test, self.y_pred)
 
         probs = model.predict_proba(X_test)[:, 1]
-        roc_auc = roc_auc_score(y_test, probs)
-        thresh_df = self.calculate_threshold_values(probs, y_test)
+        roc_auc = roc_auc_score(self.y_test, probs)
+        thresh_df = self.calculate_threshold_values(probs, self.y_test)
         
-        return precision, accuracy, recall, thresh_df, roc_auc, model
+        return self.precision, self.accuracy, self.recall, thresh_df, roc_auc, model, bow
+
 
     def calculate_threshold_values(self, prob, y):
         '''
@@ -242,34 +127,38 @@ class Create_Models(object):
         return df
 
 
-    # def get_conf_matrix(self,text_series, y, vectorizer, model):
-    #     '''
-    #     Create confusion matrix 
+    def get_conf_matrix(self):
 
-    #     Parameters
-    #     ----------
-    #     text_series: array of features
-    #     y: array of labels
-    #     vectorizer: vectorizer function
-    #     model: model function
+        '''
+        Creates confusion matrix 
 
-    #     Returns:
-    #     --------
-    #     df: pandas dataframe
-    #     '''
+        Parameters
+        ----------
+        text_series : pandas series
+        y : pandas series
+        vectorizer: vectorizer function
+        model: model function
 
-    #     # declare X
-    #     X = vectorizer.fit_transform(text_series)
-        
-    #     if model.__class__.__name__ == 'GaussianNB':
-    #         X = X.toarray()
+        Returns:
+        --------
+        None
+        '''
 
-    #     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-    #     model.fit(X_train, y_train)
-    #     y_pred = model.predict(X_test)
-        
-    #     print(confusion_matrix(y_test, y_pred))
+        cm = confusion_matrix(self.y_test, self.y_pred)
+        # flip confusion matrix, so that confusion matrix is properly ordered
+        cm_flip = np.flip(cm, 0)
+        cm_flip = np.flip(cm_flip, 1)
+        df_cm = pd.DataFrame(cm_flip, index=('oily', 'dry'), columns=('oily', 'dry'))
+
+        fig, ax = plt.subplots(figsize=(10,7))
+        sns.set(font_scale=1.4)
+        sns.heatmap(df_cm, annot=True, fmt='g')
+
+        ax.set_xlabel('Predicted')
+        ax.set_ylabel('Actual')
+        ax.set_title('Confusion Matrix')
  
+
     def plot_roc(self, ax, df, name):
         '''
         Plots single ROC curve
@@ -290,8 +179,7 @@ class Create_Models(object):
         ax.set_ylabel('True Positive Rate', fontsize=16)
     #     ax.set_title('ROC Curve - Model Comparison', fontweight='bold', fontsize=24)
         ax.legend(fontsize=14)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
+        
 
     # plot multiple rocs for NLP
     def plot_multiple_rocs(self, model_list, text_series, y, vectorizer, ax):
@@ -346,23 +234,3 @@ class Create_Models(object):
         ax.set_ylim(ymin=0,ymax=1)
         ax.legend(fontsize=14)
 
-    def print_precision_acc_recall(self, df, text_series, y, model, vectorizer):
-        '''
-        Print precision, accuracy, and recall scores for model
-
-        Parameters
-        ----------
-        df : pandas dataframe
-        test_series : 
-        name: string
-
-        Returns:
-        --------
-        None
-        '''
-        print('Precision for {} is {:.2f}'.format(self.modelling(df[text_series], y, vectorizer, model)[5].__class__.__name__,
-                                                    self.modelling(df[text_series], y, vectorizer, model)[0]))
-        print('Accuracy for {} is {:.2f}'.format(self.modelling(df[text_series], y, vectorizer, model)[5].__class__.__name__,
-                                                    self.modelling(df[text_series], y, vectorizer, model)[1]))
-        print('Recall for {} is {:.2f}'.format(self.modelling(df[text_series], y, vectorizer, model)[5].__class__.__name__,
-                                                self.modelling(df[text_series], y, vectorizer, model)[2]))
