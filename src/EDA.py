@@ -132,6 +132,18 @@ class EDA(object):
         return words_freq
 
     def top_10_word_freq(self, word_lst, word_count):
+        '''
+        Plots top 10 most frequent words.
+
+        Parameters
+        ----------
+        word_lst : lst
+        word_count : lst
+
+        Returns:
+        --------
+        None
+        '''
         fig, ax = plt.subplots(figsize=(10,7))
         ax.bar(word_lst[:10], word_count[:10], color='midnightblue')
         ax.set_xlabel('Words', fontsize=16)
