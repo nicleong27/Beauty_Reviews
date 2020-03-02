@@ -64,7 +64,6 @@ def remove_nums(text):
     --------
     no_digits: str
         String without numbers
-    
     '''
     remove_digits = str.maketrans('', '', digits)
     no_digits = text.translate(remove_digits)

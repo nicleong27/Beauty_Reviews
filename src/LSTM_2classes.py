@@ -34,15 +34,17 @@ df = pd.read_csv('sephora_review_db.csv.zip')
 model_df = df[['review_text', 'skin_type']].copy()
 
 def remove_accents(input_str):
-    ''' Removes accents from string.
+    ''' 
+    Removes accents from string
 
     Parameters
     ----------
-    input_str: string
+    input_str: str
 
     Returns:
     --------
-    nfkd_form: string without accents
+    nfkd_form: str
+        String without accents
     '''
     nfkd_form = unicodedata.normalize('NFKD', input_str)
     only_ascii = nfkd_form.encode('ASCII', 'ignore')
@@ -51,16 +53,17 @@ def remove_accents(input_str):
 
 
 def remove_nums(text):
-    '''Removes numbers from string
+    '''
+    Removes numbers from string
 
     Parameters
     ----------
-    text: string
+    text: str
 
     Returns:
     --------
-    no_digits: string without numbers
-    
+    no_digits: str
+        String without numbers
     '''
     remove_digits = str.maketrans('', '', digits)
     no_digits = text.translate(remove_digits)
@@ -73,13 +76,11 @@ def format_strings(text):
 
     Parameters
     ----------
-    df: pandas dataframe
-    col_name: string
-    stemming: stemming function
+    text : str
 
     Returns:
     --------
-    none
+    text : str
 
     '''
     # punctuation_ = set(string.punctuation)
@@ -104,15 +105,18 @@ model_df2['skin_type'] = np.where((model_df2['skin_type'] == 'oily'), 1, 0)
 
 def featurize_split_data(text_series, label_series, max_nb_words, max_seq_length):
     ''' 
+    Tokenizes and train/test splits data
 
     Parameters
     ----------
     text_series : pandas series
+    label_series : pandas series
     max_nb_words : int
+    max_seq_length : int 
 
     Returns:
     --------
-    Prints number of unique tokens
+    X_train, X_test, y_train, y_test : array, array, array, array
     '''
     tokenizer = Tokenizer(num_words=max_nb_words, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
     tokenizer.fit_on_texts(text_series.values)
@@ -129,6 +133,20 @@ def featurize_split_data(text_series, label_series, max_nb_words, max_seq_length
 
 
 def define_model(max_nb_words, embedding_dim, max_seq_length):
+    ''' 
+    Defines model, includes embedding layer, dropouts, and 
+    LSTM layers.
+
+    Parameters
+    ----------
+    max_nb_words : int
+    embedding_dim : int
+    max_seq_length : int
+
+    Returns:
+    --------
+    model : obj
+    '''
     # LSTM model2
     model = Sequential()
     # embedding layer in which words are encoded as real-valued vectors and where 
@@ -148,6 +166,18 @@ def define_model(max_nb_words, embedding_dim, max_seq_length):
 
 
 def plot_cm(y_test, y_pred_labels):
+    ''' 
+    Plots confusion matrix
+
+    Parameters
+    ----------
+    y_test : arr
+    y_pred_labels : arr
+
+    Returns:
+    --------
+    None
+    '''
     cm = confusion_matrix(y_test, y_pred_labels)
     # flip confusion matrix, so that confusion matrix is properly ordered
     cm_flip = np.flip(cm, 0)
@@ -167,7 +197,24 @@ def plot_cm(y_test, y_pred_labels):
 
 
 def plot_line(history, train_metric, val_metric, graph_name):
+    ''' 
+    Draws line graph of indicated metric
 
+    Parameters
+    ----------
+    history : obj
+        Fitted model
+    train_metric : str
+        Training set metric
+    val_metric : str
+        Validation/test set metric
+    graph_name : str
+        Name of graph
+
+    Returns:
+    --------
+    None
+    '''
     fig, ax = plt.subplots(figsize=(10,7))
     plt.title(graph_name)
     plt.plot(history.history[train_metric], label='train')
