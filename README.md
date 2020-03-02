@@ -1,56 +1,77 @@
 # Skin Types "Found"!
+*By: Nicole Leong-Lee*
 
 ## Goal:
-Is there a a way to predict skin types of reviewers based on their reviews?The purpose for this analysis was to see if skin types can be predicted based on foundation reviews.
+Over the past few years, chalk it up to fear of aging or self-maintenance, I've found myself being drawn to all things skincare. Like most consumers, I am constantly reading reviews before purchasing an item, espcially products that go on my face. These reviews provide good insight for those with similar skin types on how a product will react with his/her skin. The 4 major skin type categories include normal, dry, combination, and oily. (Combination skin is classified as oily and dry skin).
+
+
+![Skin Types Imgs](./imgs/four_skin_types.jpg)
+
+After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews? The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
 
 ## Data:
 Foundation reviews were taken from a Sephora foundation dataset found on Github (https://github.com/san2797/SephoraFoundationReviewsAnalysis/tree/master/Datasets). This dataset contained around 276,000 row and 22 columns: 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id','product_image_url', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'incentivized_review', 'skin_tone', 'age', 'beauty_insider', 'user_name', 'review_text', 'price', 'recommended', 'first_submission_date', 'last_submission_date', 'location', and 'description'.
 
 The columns I was interested in were 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'skin_tone', 'age', 'review_text', 'price', 'recommended', and 'description'.
 
-# Data Exploration:
-Skin types fell into 4 different categories: combination, oily, dry, and normal. There was disproportionally high number of reviewers who had combination skin than in any other category. 
+## Data Exploration:
+I was curious to see what were the most common skin types of users. There was disproportionally high number of reviewers who had combination skin than in any other category. Because my model goal is to predict user skin types, this class imbalance is an issue.
 
 ![Skin Types](./imgs/skin_types.png)
 
-The top 3 skin tones of reviewers were ligh, medium, and fair. 
-
-![Skin Tones](./imgs/skin_tones.png)
-
-Most of these reviewers were primarily concerned with acne.
+The number one concern for most foundation users was acne. These users could possibly be looking for a foundation that is good at covering up acne or does not cause acne.
 
 ![Skin Concerns](./imgs/skin_concerns.png)
 
-Those with Combination skin recommended a product in their review.
+I was curious to see what proportion of users recommened products. Interestingly, the proportion of recommended products to total products is consistent across all skin type categories. 
 
-![Skin Types Recs](./imgs/skin_type_rec.png)
+![Skin Types Recs](./imgs/recommended_prop.png)
 
 
-# Modelling 
-The classifications in the data are imbalanced. There is a higher amount of reviews with Combination skin. This will cause the model to have a higher level of accuracy, as the model will want to predict based on the larger class. To fix for this, a random sample of 3,000 Combination datapoints were taken. However, based on the confusion matrix created, the model did not do a good job predicting combination skin. 
+## Building the Models
 
-Instead, the model was tweaked to predict whether or not a reviewer had dry or oily skin. These features are independent of one another and may not pose an issue since Combinaton skin is, by classification, a mix of dry and oily.
+The classifications in the data are imbalanced. There is a higher amount of reviews with Combination skin. This will cause my model to predict based on the larger class. To fix for this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
 
-After removing Combination and Normal skin types from the datset, there were around 46,000 reviews left. Words were tokenized and lemmatized. Logistic regression was the model that had the highest AUC and highest level of precision (77%), accuracy (75%), and recall (78%). Gradient Boosting was considered, however, this had slightly lower accuracy (78%) and recall (62%).
+After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning and tokenizing, I decided to lemmatize because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
 
-![ROC Curves](./imgs/model_compare_roc.png)
+## Results 
+### Base Model
+My base model was the Gradient Boosting Classifier with 74% accuracy, 82% precision, and 66% recall. The recall score for this model was fairly low. In my next model, I looked to improve not only my overall accuracy score, but also my recall score. A higher recall score would indicate that I had a lower number of False Negatives (predicted dry, but oily). 
 
-![Precision Recall](./imgs/prec_recall.png)
+I was primarily concerned with a higher recall score since there is a greater detriment of predicting dry skin types for users who actually have oily skin. This incorrect prediction would result in a user choosing a product that is more hydrating, which would make his/her more oily and potentially cause breakouts.
 
-# Findings and Conclusion
+![ROC Curves](./imgs/model_compare_roc3.png)
 
-The words "dry" and "oily" appear to be important tag words these reviews.
+![Precision Recall](./imgs/confusion_matrix_model3.png)
 
-![WordCloud Reviews](./imgs/WordCloud_reviews.png)
+Based on the below, it appears that the words "dry" or "oily" are important features in the model.
 
-Interestingly, "foundation" and "skin" are the top 2 words that occur the most throughout reviews.
+![Dry Oily](./imgs/top_10_feature_importances.png)
 
-![Top10 Words](./imgs/top10_word_counts.png)
+### LSTM Model
 
-Based on the below, it does not appear that the occurrence of the words "dry" or "oily" are indicative of whether or not the model correctly predicts a reviewer's skin type is oily or dry.
+For my LSTM model, I cleaned the review text and kept the same stopwords used for my Gradient Boosting Classifier, but used the Tokenizer function provided in Keras. My initial model contained 1 embedding layer and 1 LSTM layer with a 25% test size. This resulted in poor results where the model started to overfit after 4 epochs. I ended up using a Sequential Keras model with 1 embedding layer and 2 LSTM layers with a 10% test size. 
 
-![Dry Oily](./imgs/occ_dry_oily.png)
+**Initial LSTM Model**
 
-**Next Steps**
+![LSTM1 Loss](./imgs/Model1_Loss.png)
+![LSTM1 Acc](./imgs/Model1_Acc.png)
+![LSTM1 CM](./imgs/Model1_cm.png)
 
-In spite of not being able to find key words that are indicative of whether or not a reviewer has dry or oily skin, a next step of this analysis is to perform NMF and see what latent topics may appear. Perhaps the type of coverage or texture of the foundation are latent topics that will help indicate whether or not a reviewer has oily or dry skin.
+**Final LSTM Model**
+
+![LSTM2 Loss](./imgs/Model18_Loss.png)
+![LSMT2 Acc](./imgs/Model18_Accuracy.png)
+![LSTM2 CM](./imgs/Model18_cm1.png)
+
+| Metric          | Score         | 
+| --------------- |:-------------:| 
+| Model Score     | 48%           |
+| Accuracy Score  | 75%           |  
+| Precision Score | 77%           | 
+| Recall Score    | 77%           | 
+
+## Future Work
+
+* Improve the LSTM model predicting 3 classifications (skin types: oily, dry, normal)
+* Webscrape more reviews to incorporate and train model 
