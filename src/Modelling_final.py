@@ -49,12 +49,7 @@ class Create_Models(object):
     '''
 
     def __init__(self):
-        self.y_pred = y_pred
-        self.y_test = y_test
-        self.precision = precision
-        self.accuracy = accuracy
-        self.recall = recall
-        self.vect = vect 
+        pass
 
 
     def modelling(self, text_series, y, vectorizer, model):
