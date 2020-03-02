@@ -44,19 +44,19 @@ I was primarily concerned with a higher recall score since there is a greater de
 
 ![Precision Recall](./imgs/confusion_matrix_model3.png)
 
-Based on the below, it appears that the words "dry" and "oily" are important features in the model.
+Based on the below, it appears that the words 'dry' and 'oily' are important features in the model.
 
 ![Dry Oily](./imgs/top_10_feature_importances.png)
 
 ### LSTM Model
 
-For my LSTM model, I cleaned the review text and kept the same stopwords used for my Gradient Boosting Classifier, but used the Tokenizer function provided in Keras. My initial model contained 1 embedding layer and 1 LSTM layer with a 25% test size. This resulted in poor results where the model started to overfit after 4 epochs. I ended up using a Sequential Keras model with 1 embedding layer, 2 LSTM layers, and a 10% test size. 
+For my LSTM model, I cleaned the review text and kept the same stopwords used for my Gradient Boosting Classifier, but used the Tokenizer function provided in Keras. My initial model contained 1 embedding layer and 1 LSTM layer with a 25% test size. This resulted in poor results where the model started to overfit after 1 epoch. I ended up using a Sequential Keras model with 1 embedding layer, 2 LSTM layers, and a 10% test size. 
 
 **Initial LSTM Model**
 
-![LSTM1 Loss](./imgs/Model1_Loss.png)
-![LSTM1 Acc](./imgs/Model1_Acc.png)
-![LSTM1 CM](./imgs/Model1_cm.png)
+![LSTM1 Loss](./imgs/Model2_Loss.png)
+![LSTM1 Acc](./imgs/Model2_Acc.png)
+![LSTM1 CM](./imgs/Model2_cm.png)
 
 **Final LSTM Model**
 
@@ -78,6 +78,12 @@ How good is my model at predicting new data? I took a handful of reviews from Am
 The model did an ok job at predicting oily/dry skin types. Index 4 shows a user with oily skin, but the model incorrectly predicted the user with dry skin.
 
 ![Amazon](./imgs/Amazon.png)
+
+## Recreation
+
+EDA and initial model comparisons were done python notebooks named 'Sephora-EDA.ipynb' and 'Reviews-Modelling_final.ipynb', respectively. See the 'LSTM_Model.ipynb' file to see visualizations of the LSTM models. 
+
+To execute the final LSTM model (predicting dry and oily skin types), simply run the python code under the src folder titled, 'LSTM_2classes.py'. The model for the 3 classifcation LSTM model can also by found under the src folder titled, 'LSTM_3classes.py'. As mentioned earlier, the dataset can be found on the Github link above named 'sephora_review_db.csv.zip'.
 
 ## Future Work
 
