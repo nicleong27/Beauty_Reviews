@@ -15,7 +15,7 @@ Foundation reviews were taken from a Sephora foundation dataset found on Github 
 The columns I was interested in exploring were 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'skin_tone', 'age', 'review_text', 'recommended', and 'description'.
 
 ## Data Exploration:
-There was disproportionally high number of reviewers who had combination skin than in any other category. Because my model's goal is to predict user skin types, this class imbalance is an issue.
+There was a disproportionally high number of reviewers who had combination skin than in any other category. Because my model's goal is to predict user skin types, this class imbalance is an issue.
 
 ![Skin Types](./imgs/skin_types.png)
 
@@ -81,14 +81,14 @@ The model did an ok job at predicting oily/dry skin types. Index 4 shows a user 
 
 ## Recreation
 
-EDA and initial model comparisons were done python notebooks named 'Sephora-EDA.ipynb' and 'Reviews-Modelling_final.ipynb', respectively. See the 'LSTM_Model.ipynb' file to see visualizations of the LSTM models. 
+EDA and initial model comparisons were done in python notebooks named 'Sephora-EDA.ipynb' and 'Reviews-Modelling_final.ipynb', respectively. See the 'LSTM_Model.ipynb' file to see visualizations of the LSTM models. 
 
 To execute the final LSTM model (predicting dry and oily skin types), simply run the python code under the src folder titled, 'LSTM_2classes.py'. The model for the 3 classifcation LSTM model can also by found under the src folder titled, 'LSTM_3classes.py'. As mentioned earlier, the dataset can be found on the Github link above named 'sephora_review_db.csv.zip'.
 
 ## Future Work
 
-* Webscrape more reviews to incorporate, train, and test model
-* Further improve LSTM model prediction dry/oily skin types
+* Webscrape more reviews to incorporate into, train, and test model
+* Further improve LSTM model prediction for dry/oily skin types
 * Improve the LSTM model predicting 3 classifications (skin types: oily, dry, normal)
-* Predict all 4 classifications (sking types: oily, dry, normal, and combination)
+* Predict all 4 classifications (skin types: oily, dry, normal, and combination)
  
