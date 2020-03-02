@@ -10,16 +10,16 @@ Over the past few years, chalk it up to fear of aging or self-maintenance, I've 
 After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews? The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
 
 ## Data:
-Foundation reviews were taken from a Sephora foundation dataset found on Github (https://github.com/san2797/SephoraFoundationReviewsAnalysis/tree/master/Datasets). This dataset contained around 276,000 row and 22 columns: 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id','product_image_url', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'incentivized_review', 'skin_tone', 'age', 'beauty_insider', 'user_name', 'review_text', 'price', 'recommended', 'first_submission_date', 'last_submission_date', 'location', and 'description'.
+Foundation reviews were taken from a Sephora foundation dataset found on Github (https://github.com/san2797/SephoraFoundationReviewsAnalysis/tree/master/Datasets). This dataset contains around 276,000 rows and 22 columns: 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id','product_image_url', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'incentivized_review', 'skin_tone', 'age', 'beauty_insider', 'user_name', 'review_text', 'price', 'recommended', 'first_submission_date', 'last_submission_date', 'location', and 'description'.
 
 The columns I was interested in were 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'skin_tone', 'age', 'review_text', 'price', 'recommended', and 'description'.
 
 ## Data Exploration:
-I was curious to see what were the most common skin types of users. There was disproportionally high number of reviewers who had combination skin than in any other category. Because my model goal is to predict user skin types, this class imbalance is an issue.
+There was disproportionally high number of reviewers who had combination skin than in any other category. Because my model's goal is to predict user skin types, this class imbalance is an issue.
 
 ![Skin Types](./imgs/skin_types.png)
 
-The number one concern for most foundation users was acne. These users could possibly be looking for a foundation that is good at covering up acne or does not cause acne.
+The number one concern for most foundation users was acne. These users could possibly be looking for a foundation that is good at covering up acne or does not exacerbate his/her acne.
 
 ![Skin Concerns](./imgs/skin_concerns.png)
 
@@ -30,15 +30,15 @@ I was curious to see what proportion of users recommened products. Interestingly
 
 ## Building the Models
 
-The classifications in the data are imbalanced. There is a higher amount of reviews with Combination skin. This will cause my model to predict based on the larger class. To fix for this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
+The classifications in the data are imbalanced with a higher amount of users with Combination skin. This will cause my model to predict based on the larger class. To fix for this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
 
-After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning and tokenizing, I decided to lemmatize because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
+After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning and tokenizing, I decided to lemmatize words in the reviews because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
 
 ## Results 
 ### Base Model
 My base model was the Gradient Boosting Classifier with 74% accuracy, 82% precision, and 66% recall. The recall score for this model was fairly low. In my next model, I looked to improve not only my overall accuracy score, but also my recall score. A higher recall score would indicate that I had a lower number of False Negatives (predicted dry, but oily). 
 
-I was primarily concerned with a higher recall score since there is a greater detriment of predicting dry skin types for users who actually have oily skin. This incorrect prediction would result in a user choosing a product that is more hydrating, which would make his/her more oily and potentially cause breakouts.
+I was primarily concerned with a higher recall score since there is a greater detriment of predicting dry skin types for users who actually have oily skin. This incorrect prediction would result in a user with oily skin to choose a product that is more hydrating, which might exacerbate or worsen his/her skin condition and cause more breakouts.
 
 ![ROC Curves](./imgs/model_compare_roc3.png)
 
@@ -50,7 +50,7 @@ Based on the below, it appears that the words "dry" or "oily" are important feat
 
 ### LSTM Model
 
-For my LSTM model, I cleaned the review text and kept the same stopwords used for my Gradient Boosting Classifier, but used the Tokenizer function provided in Keras. My initial model contained 1 embedding layer and 1 LSTM layer with a 25% test size. This resulted in poor results where the model started to overfit after 4 epochs. I ended up using a Sequential Keras model with 1 embedding layer and 2 LSTM layers with a 10% test size. 
+For my LSTM model, I cleaned the review text and kept the same stopwords used for my Gradient Boosting Classifier, but used the Tokenizer function provided in Keras. My initial model contained 1 embedding layer and 1 LSTM layer with a 25% test size. This resulted in poor results where the model started to overfit after 4 epochs. I ended up using a Sequential Keras model with 1 embedding layer, 2 LSTM layers, and a 10% test size. 
 
 **Initial LSTM Model**
 
@@ -71,7 +71,18 @@ For my LSTM model, I cleaned the review text and kept the same stopwords used fo
 | Precision Score | 77%           | 
 | Recall Score    | 77%           | 
 
-## Future Work
+### New Data
 
+How good is my model at predicting new data? I took a handful of reviews from Amazon for a face moisturizer. Since Amazon does not contain reviewer information like skin type, I wanted to see how my model performed when predicting these reviews. 
+
+The model did an ok job at predicting oily/dry skin types. Index 4 shows a user with oily skin, but the model incorrectly predicted the user with dry skin.
+
+![Amazon](./imgs/Amazon.png)
+
+### Future Work
+
+* Webscrape more reviews to incorporate, train, and test model
+* Further improve LSTM model prediction dry/oily skin types
 * Improve the LSTM model predicting 3 classifications (skin types: oily, dry, normal)
-* Webscrape more reviews to incorporate and train model 
+* Predict all 4 classifications (sking types: oily, dry, normal, and combination)
+ 
