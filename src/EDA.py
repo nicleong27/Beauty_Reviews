@@ -14,7 +14,9 @@ class EDA(object):
         pass
 
     def missing_zero_values_table(self, df):
-        ''' Returns a dataframe showing the number of missing or zero values in the input dataframe.
+        ''' 
+        Returns a dataframe showing the number of missing or zero values in the 
+        input dataframe
 
         Parameters
         ----------
@@ -43,7 +45,9 @@ class EDA(object):
         return mz_table
 
     def plot_skin(self, df, group, count_by):
-        ''' Groups by a specific column and plots the count of those categories in a bar graph.
+        ''' 
+        Groups by a specific column and plots the count of those categories 
+        in a bar graph
 
         Parameters
         ----------
@@ -66,7 +70,7 @@ class EDA(object):
         plt.yticks(fontsize=12)
     
     def plot_histograms_by_outcome(self, x, y, y0_name, y1_name):
-        ''' Plots histogram distribution by outcome categories.
+        ''' Plots histogram distribution by outcome categories
 
         Parameters
         ----------
@@ -93,7 +97,7 @@ class EDA(object):
 
     def create_wordcloud(self, df, col_name):
         '''
-        Creates wordcloud based on dataframe column name.
+        Creates wordcloud based on dataframe column name
 
         Parameters
         ----------
@@ -113,7 +117,7 @@ class EDA(object):
     def w_freq(self, text_series):
         '''
         Maps bag of words with count frequencies and sorts these from 
-        most to least frequent.
+        most to least frequent
 
         Parameters
         ----------
@@ -133,7 +137,7 @@ class EDA(object):
 
     def top_10_word_freq(self, word_lst, word_count):
         '''
-        Plots top 10 most frequent words.
+        Plots top 10 most frequent words
 
         Parameters
         ----------

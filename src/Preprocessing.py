@@ -71,7 +71,8 @@ class Prepocessing(object):
         Parameters
         ----------
         df: pandas dataframe
-        col_name: column name string
+        col_name: str
+            Column name string
         vectorizer: vectorizer function
 
         Returns:
@@ -88,11 +89,12 @@ class Prepocessing(object):
 
         Parameters
         ----------
-        input_str: string
+        input_str: str
 
         Returns:
         --------
-        nfkd_form: string without accents
+        nfkd_form: str
+            String without accents
         '''
         nfkd_form = unicodedata.normalize('NFKD', input_str)
         only_ascii = nfkd_form.encode('ASCII', 'ignore')
@@ -105,11 +107,12 @@ class Prepocessing(object):
 
         Parameters
         ----------
-        text: string
+        text: str
 
         Returns:
         --------
-        stripped_text: string without html tags
+        stripped_text: str
+            String without html tags
         
         '''
         soup = BeautifulSoup(text, "html.parser")
@@ -121,7 +124,7 @@ class Prepocessing(object):
 
         Parameters
         ----------
-        text: string
+        text: str
 
         Returns:
         --------
@@ -140,12 +143,12 @@ class Prepocessing(object):
         Parameters
         ----------
         df: pandas dataframe
-        col_name: string
+        col_name: str
         stemming: stemming function
 
         Returns:
         --------
-        none
+        df : pandas dataframe
 
         '''
         punctuation_ = set(string.punctuation)

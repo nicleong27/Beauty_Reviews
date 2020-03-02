@@ -41,10 +41,10 @@ import seaborn as sns
 
 
 class Create_Models(object):
-    ''' Preprocessing class train/test split data, fits, and predict y labels 
-    of model.
+    ''' Class that train/test splits data, fits, and predicts y labels 
+    of model
 
-    This also includes visualizations for the model like ROC curve, 
+    This also includes visualizations for the model like ROC curve and 
     precision/recall curve
     '''
 
@@ -63,8 +63,10 @@ class Create_Models(object):
 
         Parameters
         ----------
-        text_series : array of features
-        y : array of labels
+        text_series : arr
+            Array of features
+        y : arr
+            Array of labels
         vectorizer : vectorizer function
         model_: model function
 
@@ -97,13 +99,15 @@ class Create_Models(object):
 
     def calculate_threshold_values(self, prob, y):
         '''
-        Create pandas dataframe that contains True Negatives, False Negatives, True Positives, and
-        False Positives
+        Create pandas dataframe that contains True Negatives, False Negatives, 
+        True Positives, and False Positives
 
         Parameters
         ----------
-        prob: array of predicted probabilities
-        y: array of labels
+        prob: arr
+            Array of predicted probabilities
+        y: arr
+            Array of labels
 
         Returns:
         --------
@@ -128,9 +132,8 @@ class Create_Models(object):
 
 
     def get_conf_matrix(self):
-
         '''
-        Creates confusion matrix 
+        Creates confusion matrix
 
         Parameters
         ----------
@@ -143,7 +146,6 @@ class Create_Models(object):
         --------
         None
         '''
-
         cm = confusion_matrix(self.y_test, self.y_pred)
         # flip confusion matrix, so that confusion matrix is properly ordered
         cm_flip = np.flip(cm, 0)
@@ -167,7 +169,7 @@ class Create_Models(object):
         ----------
         ax: axis in plt.subplots()
         df: pandas dataframe
-        name: string
+        name: str
 
         Returns:
         --------
@@ -181,7 +183,6 @@ class Create_Models(object):
         ax.legend(fontsize=14)
         
 
-    # plot multiple rocs for NLP
     def plot_multiple_rocs(self, model_list, text_series, y, vectorizer, ax):
         '''
         Plots multiple ROC curves for model comparison
@@ -189,9 +190,9 @@ class Create_Models(object):
         Parameters
         ----------
         model_list : lst
-                    List of models looking to compare
+            List of models looking to compare
         text_series : pandas series
-                    Pandas series of text
+            Pandas series of text
         y : pandas series 
             Y labels
         vectorizer : vectorizer function
