@@ -7,12 +7,12 @@ Over the past few years, chalk it up to fear of aging or self-maintenance, I've 
 
 ![Skin Types Imgs](./imgs/four_skin_types.jpg)
 
-After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews? The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
+After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews. The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
 
 ## Data:
 Foundation reviews were taken from a Sephora foundation dataset found on Github (https://github.com/san2797/SephoraFoundationReviewsAnalysis/tree/master/Datasets). This dataset contains around 276,000 rows and 22 columns: 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id','product_image_url', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'incentivized_review', 'skin_tone', 'age', 'beauty_insider', 'user_name', 'review_text', 'price', 'recommended', 'first_submission_date', 'last_submission_date', 'location', and 'description'.
 
-The columns I was interested in were 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'skin_tone', 'age', 'review_text', 'price', 'recommended', and 'description'.
+The columns I was interested in exploring were 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'skin_tone', 'age', 'review_text', 'recommended', and 'description'.
 
 ## Data Exploration:
 There was disproportionally high number of reviewers who had combination skin than in any other category. Because my model's goal is to predict user skin types, this class imbalance is an issue.
@@ -30,7 +30,7 @@ I was curious to see what proportion of users recommened products. Interestingly
 
 ## Building the Models
 
-The classifications in the data are imbalanced with a higher amount of users with Combination skin. This will cause my model to predict based on the larger class. To fix for this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
+The classifications in the data are imbalanced with a higher amount of users with Combination skin. This imbalance will cause my model to predict based on the larger class. To fix this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
 
 After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning and tokenizing, I decided to lemmatize words in the reviews because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
 
@@ -44,7 +44,7 @@ I was primarily concerned with a higher recall score since there is a greater de
 
 ![Precision Recall](./imgs/confusion_matrix_model3.png)
 
-Based on the below, it appears that the words "dry" or "oily" are important features in the model.
+Based on the below, it appears that the words "dry" and "oily" are important features in the model.
 
 ![Dry Oily](./imgs/top_10_feature_importances.png)
 
@@ -79,7 +79,7 @@ The model did an ok job at predicting oily/dry skin types. Index 4 shows a user 
 
 ![Amazon](./imgs/Amazon.png)
 
-### Future Work
+## Future Work
 
 * Webscrape more reviews to incorporate, train, and test model
 * Further improve LSTM model prediction dry/oily skin types
