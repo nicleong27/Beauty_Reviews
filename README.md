@@ -32,7 +32,7 @@ I was curious to see what proportion of users recommened products. Interestingly
 
 The classifications in the data are imbalanced with a higher amount of users with Combination skin. This imbalance will cause my model to predict based on the larger class. To fix this, I decided to predict only dry and oily skin types since these classifications are balanced and independent of one another. Trying to predict combination skin would pose a challenge as this skin type is a mix of both dry and oily skin.
 
-After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning and tokenizing, I decided to lemmatize words in the reviews because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
+After removing Combination and Normal skin types from the datset, there was around 46,000 reviews left. After cleaning, I decided to lemmatize words in the reviews because I wanted to retain the base/root form of a word instead of cutting it off. I also included the words 'foundation' and 'skin' in my list of stop words since I found these words to be obvious and made only a slight difference to my model. 
 
 ## Results 
 ### Base Model
