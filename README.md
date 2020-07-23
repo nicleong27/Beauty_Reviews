@@ -4,8 +4,9 @@
 ## Goal:
 Over the past few years, chalk it up to fear of aging or self-maintenance, I've found myself being drawn to all things skincare. Like most consumers, I am constantly reading reviews before purchasing an item, espcially products that go on my face. These reviews provide good insight for those with similar skin types on how a product will react with his/her skin. The 4 major skin type categories include normal, dry, combination, and oily. (Combination skin is classified as oily and dry skin).
 
-
-![Skin Types Imgs](./imgs/four_skin_types.jpg)
+<p align="center">
+    <img src="./imgs/four_skin_types.jpg" />
+</p>
 
 After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews. The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
 
@@ -17,15 +18,21 @@ The columns I was interested in exploring were 'brand', 'name', 'brand_id', 'bra
 ## Data Exploration:
 There was a disproportionally high number of reviewers who had combination skin than in any other category. Because my model's goal is to predict user skin types, this class imbalance is an issue.
 
-![Skin Types](./imgs/skin_types.png)
+<p align="center">
+    <img src="./imgs/skin_types.png" />
+</p>
 
 The number one concern for most foundation users was acne. These users could possibly be looking for a foundation that is good at covering up acne or does not exacerbate his/her acne.
 
-![Skin Concerns](./imgs/skin_concerns.png)
+<p align="center">
+    <img src="./imgs/skin_concerns.png" />
+</p>
 
 I was curious to see what proportion of users recommened products. Interestingly, the proportion of recommended products to total products is consistent across all skin type categories. 
 
-![Skin Types Recs](./imgs/recommended_prop.png)
+<p align="center">
+    <img src="./imgs/recommended_prop.png" />
+</p>
 
 
 ## Building the Models
@@ -40,13 +47,19 @@ My base model was the Gradient Boosting Classifier with 74% accuracy, 82% precis
 
 I was primarily concerned with a higher recall score since there is a greater detriment of predicting dry skin types for users who actually have oily skin. This incorrect prediction would result in a user with oily skin to choose a product that is more hydrating, which might exacerbate or worsen his/her skin condition and cause more breakouts.
 
-![ROC Curves](./imgs/model_compare_roc3.png)
+<p align="center">
+    <img src="./imgs/model_compare_roc3.png" />
+</p>
 
-![Precision Recall](./imgs/confusion_matrix_model3.png)
+<p align="center">
+    <img src="./imgs/confusion_matrix_model3.png" />
+</p>
 
 Based on the below, it appears that the words 'dry' and 'oily' are important features in the model.
 
-![Dry Oily](./imgs/top_10_feature_importances.png)
+<p align="center">
+    <img src="./imgs/top_10_feature_importances.png" />
+</p>
 
 ### LSTM Model
 
@@ -54,15 +67,28 @@ For my LSTM model, I cleaned the review text and kept the same stopwords used fo
 
 **Initial LSTM Model**
 
-![LSTM1 Loss](./imgs/Model2_Loss.png)
-![LSTM1 Acc](./imgs/Model2_Acc.png)
-![LSTM1 CM](./imgs/Model2_cm.png)
+<p align="center">
+    <img src="./imgs/Model2_Loss.png" />
+</p>
+<p align="center">
+    <img src="./imgs/Model2_Acc.png" />
+</p>
+<p align="center">
+    <img src="./imgs/Model2_cm.png" />
+</p>
 
 **Final LSTM Model**
 
-![LSTM2 Loss](./imgs/Model18_Loss.png)
-![LSMT2 Acc](./imgs/Model18_Accuracy.png)
-![LSTM2 CM](./imgs/Model18_cm1.png)
+<p align="center">
+    <img src="./imgs/Model18_Loss.png" />
+</p>
+<p align="center">
+    <img src="./imgs/Model18_Accuracy.png" />
+</p>
+<p align="center">
+    <img src="./imgs/Model18_cm1.png" />
+</p>
+
 
 | Metric          | Score         | 
 | --------------- |:-------------:| 
@@ -71,13 +97,16 @@ For my LSTM model, I cleaned the review text and kept the same stopwords used fo
 | Precision Score | 77%           | 
 | Recall Score    | 77%           | 
 
+
 ### New Data
 
 How good is my model at predicting new data? I took a handful of reviews from Amazon for a face moisturizer. Since Amazon does not contain reviewer information like skin type, I wanted to see how my model performed when predicting these reviews. 
 
 The model did an ok job at predicting oily/dry skin types. Index 4 shows a user with oily skin, but the model incorrectly predicted the user with dry skin.
 
-![Amazon](./imgs/Amazon.png)
+<p align="center">
+    <img src="./imgs/Amazon.png" />
+</p>
 
 ## Recreation
 
