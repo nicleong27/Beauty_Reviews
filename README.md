@@ -2,13 +2,13 @@
 *By: Nicole Leong-Lee*
 
 ## Goal:
-Over the past few years, chalk it up to fear of aging or self-maintenance, I've found myself being drawn to all things skincare. Like most consumers, I am constantly reading reviews before purchasing an item, espcially products that go on my face. These reviews provide good insight for those with similar skin types on how a product will react with his/her skin. The 4 major skin type categories include normal, dry, combination, and oily. (Combination skin is classified as oily and dry skin).
+Over the past few years, chalk it up to fear of aging or self-maintenance, I've found myself being drawn to all things skincare. Like most consumers, I am constantly reading reviews before purchasing an item, especially products that go on my face. These reviews provide good insight for those with similar skin types on how a product will react with his/her skin. The 4 major skin type categories include normal, dry, combination, and oily. (Combination skin is classified as oily and dry skin).
 
 <p align="center">
     <img src="./imgs/four_skin_types.jpg" />
 </p>
 
-After reading so many reviews, I wondered if there is a way to predict skin types of reviewers based on their reviews. The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
+After reading so many reviews, I wondered if there was a way to predict skin types of reviewers based on their reviews. The purpose for this analysis was to see if skin types can be predicted based on foundation reviews using Long Short-Term Memory (LSTM).
 
 ## Data:
 Foundation reviews were taken from a Sephora foundation dataset found on Github (https://github.com/san2797/SephoraFoundationReviewsAnalysis/tree/master/Datasets). This dataset contains around 276,000 rows and 22 columns: 'brand', 'name', 'brand_id', 'brand_image_url', 'product_id','product_image_url', 'rating', 'skin_type', 'eye_color', 'skin_concerns', 'incentivized_review', 'skin_tone', 'age', 'beauty_insider', 'user_name', 'review_text', 'price', 'recommended', 'first_submission_date', 'last_submission_date', 'location', and 'description'.
@@ -91,7 +91,7 @@ For my LSTM model, I cleaned the review text and kept the same stopwords used fo
 
 
 | Metric          | Score         | 
-| --------------- |:-------------:| 
+|:---------------:|:-------------:| 
 | Model Score     | 48%           |
 | Accuracy Score  | 75%           |  
 | Precision Score | 77%           | 
