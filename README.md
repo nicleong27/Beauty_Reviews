@@ -112,7 +112,7 @@ The model did an ok job at predicting oily/dry skin types. Index 4 shows a user 
 
 EDA and initial model comparisons were done in python notebooks named 'Sephora-EDA.ipynb' and 'Reviews-Modelling_final.ipynb', respectively. See the 'LSTM_Model.ipynb' file to see visualizations of the LSTM models. 
 
-To execute the final LSTM model (predicting dry and oily skin types), simply run the python code under the src folder titled, 'LSTM_2classes.py'. The model for the 3 classifcation LSTM model is also found under the src folder titled, 'LSTM_3classes.py'. As mentioned earlier, the dataset can be found on the Github link above named 'sephora_review_db.csv.zip'. Make sure that the dataset is saved in the same folder where the python code is executed prior to running.
+To execute the final LSTM model (predicting dry and oily skin types), simply run the python code under the src folder titled, 'LSTM_2classes.py'. The model for the 3 classifcation LSTM model is also found under the src folder titled, 'LSTM_3classes.py'. As mentioned earlier, the dataset can be found on the Github link above named 'sephora_review_db.csv.zip'. 
 
 ## Future Work
 
